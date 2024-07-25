@@ -1,0 +1,52 @@
+name-template: 'Release $RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feature'
+      - 'enhancement'
+      - 'feat'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+  - title: '📚 Documentation'
+    labels:
+      - 'documentation'
+      - 'docs'
+
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+template: |
+  ## What's Changed
+
+  $CHANGES
+
+include-labels:
+  - 'feature'
+  - 'enhancement'
+  - 'feat'
+  - 'fix'
+  - 'bugfix'
+  - 'bug'
+  - 'documentation'
+  - 'docs'
+
+exclude-labels:
+  - 'chore'
+  - 'dependencies'
+  - 'deps'
+  - 'build'
+  - 'ci'
+
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+  patch:
+    labels:
+      - 'patch'
+  default: patch

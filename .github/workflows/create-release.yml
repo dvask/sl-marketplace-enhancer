@@ -1,0 +1,135 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number for the release'
+        required: true
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # This ensures all history is fetched
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Prepare Firefox package
+        run: |
+          mkdir firefox_package
+          cp -r dist/* firefox_package/
+          mv firefox_package/manifest.firefox.json firefox_package/manifest.json
+          rm firefox_package/manifest.chrome.json
+          cd firefox_package
+          zip -r ../sl-marketplace-enhancer-firefox-${{ github.event.inputs.version }}.zip .
+          cd ..
+          rm -rf firefox_package
+
+      - name: Prepare Chrome package
+        run: |
+          mkdir chrome_package
+          cp -r dist/* chrome_package/
+          mv chrome_package/manifest.chrome.json chrome_package/manifest.json
+          rm chrome_package/manifest.firefox.json
+          cd chrome_package
+          zip -r ../sl-marketplace-enhancer-chrome-${{ github.event.inputs.version }}.zip .
+          cd ..
+          rm -rf chrome_package
+
+      - name: Check and update version in files
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          
+          # Function to check if version exists in file
+          version_exists() {
+            grep -q "\"version\": \"$VERSION\"" $1
+          }
+          
+          # Check if version needs to be updated
+          UPDATE_NEEDED=false
+          
+          if ! version_exists package.json; then
+            UPDATE_NEEDED=true
+          elif ! version_exists src/manifest.chrome.json; then
+            UPDATE_NEEDED=true
+          elif ! version_exists src/manifest.firefox.json; then
+            UPDATE_NEEDED=true
+          fi
+          
+          if [ "$UPDATE_NEEDED" = true ]; then
+            echo "Updating version to $VERSION in files"
+            
+            # Update package.json
+            sed -i 's/"version": "[^"]*"/"version": "'"$VERSION"'"/' package.json
+            
+            # Update manifest.chrome.json
+            sed -i 's/"version": "[^"]*"/"version": "'"$VERSION"'"/' src/manifest.chrome.json
+            
+            # Update manifest.firefox.json
+            sed -i 's/"version": "[^"]*"/"version": "'"$VERSION"'"/' src/manifest.firefox.json
+          fi
+
+      - name: Create Tag
+        run: |
+          # Check if there are any changes
+          if [[ -n $(git status -s | grep -v '\.zip$' | grep -v '^.. dist/') ]]; then
+            # Configure git
+            git config user.name "${{ github.actor }}"
+            git config user.email "${{ github.actor }}@users.noreply.github.com"
+            
+            # Stage changes (excluding zip files and dist directory)
+            git add package.json src/manifest.chrome.json src/manifest.firefox.json
+            
+            # Commit changes
+            git commit -m "Bump version to ${{ github.event.inputs.version }}"
+            
+            # Push changes
+            git push
+          else
+            echo "No changes to commit"
+          fi
+          
+          # Create and push tag regardless of whether there were changes
+          git tag v${{ github.event.inputs.version }}
+          git push origin v${{ github.event.inputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          configuration: ".github/changelog-configuration.json"
+          toTag: v${{ github.event.inputs.version }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2.0.8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          name: Release ${{ github.event.inputs.version }}
+          body: ${{ steps.github_release.outputs.changelog }}
+          draft: true
+          prerelease: false
+          files: |
+            sl-marketplace-enhancer-firefox-${{ github.event.inputs.version }}.zip
+            sl-marketplace-enhancer-chrome-${{ github.event.inputs.version }}.zip

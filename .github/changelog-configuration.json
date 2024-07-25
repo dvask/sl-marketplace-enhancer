@@ -1,0 +1,54 @@
+{
+    "categories": [
+      {
+        "title": "🚀 Features",
+        "labels": ["feature", "enhancement", "feat"]
+      },
+      {
+        "title": "🐛 Bug Fixes",
+        "labels": ["fix", "bugfix", "bug"]
+      },
+      {
+        "title": "📚 Documentation",
+        "labels": ["documentation", "docs"]
+      }
+    ],
+    "ignore_labels": [
+      "chore",
+      "dependencies",
+      "deps",
+      "build",
+      "ci"
+    ],
+    "sort": "ASC",
+    "template": "## What's Changed\n\n${{CHANGELOG}}\n",
+    "pr_template": "- ${{TITLE}} by @${{AUTHOR}} (#${{NUMBER}})",
+    "empty_template": "- No changes",
+    "label_extractor": [
+      {
+        "pattern": "(.) (.+)",
+        "target": "$1",
+        "flags": "gu"
+      },
+      {
+        "pattern": "\\[(.+)\\]",
+        "target": "$1",
+        "flags": "gu"
+      }
+    ],
+    "transformers": [
+      {
+        "pattern": "[\\-\\*] (\\[(...|TEST|CI|SKIP)\\])( )?(.+?)\n(.+?[\\-\\*] )(.+)",
+        "target": "* $4\n  $6"
+      }
+    ],
+    "max_tags_to_fetch": 200,
+    "max_pull_requests": 200,
+    "max_back_track_time_days": 365,
+    "exclude_merge_branches": [
+      "Owner/qa"
+    ],
+    "tag_resolver": {
+      "method": "semver"
+    }
+  }

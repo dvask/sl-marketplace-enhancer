@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SL Marketplace Enhancer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            width: 300px;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .category {
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .option label {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            cursor: help;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        button {
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button.enabled {
+            background-color: #4CAF50;
+        }
+        button.disabled {
+            background-color: #f44336;
+        }
+        #statusMessage {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>SL Marketplace Enhancer</h1>
+    
+    <button id="togglePlugin">Disable Plugin</button>
+
+    <div class="category">
+        <h2>General</h2>
+        <div class="option">
+            <input type="checkbox" id="hideFeaturedItemsCategory">
+            <label for="hideFeaturedItemsCategory">Hide Featured Items Category</label>
+            <div class="tooltip">[?]
+                <span class="tooltiptext">Hides the featured items categories on the front and search pages.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>Product Page</h2>
+        <div class="option">
+            <input type="checkbox" id="enableProductTimestamp">
+            <label for="enableProductTimestamp">Show item listing date</label>
+            <div class="tooltip">[?]
+                <span class="tooltiptext">Displays the item listing date on product pages.</span>
+            </div>
+        </div>
+        <div class="option">
+            <input type="checkbox" id="enableProductTags">
+            <label for="enableProductTags">Show listing tags</label>
+            <div class="tooltip">[?]
+                <span class="tooltiptext">Displays listing tags on the product pages.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>Search Results</h2>
+        <div class="option">
+            <input type="checkbox" id="enableSearchTimestamp">
+            <label for="enableSearchTimestamp">Show item listing date</label>
+            <div class="tooltip">[?]
+                <span class="tooltiptext">Displays the item listing dates in search results and on category pages.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="category">
+        <h2>Store Pages</h2>
+        <div class="option">
+            <input type="checkbox" id="enableStoreTimestamp">
+            <label for="enableStoreTimestamp">Show item listing date</label>
+            <div class="tooltip">[?]
+                <span class="tooltiptext">Displays the item listing dates on store pages.</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusMessage"></div>
+
+    <p style="text-align: center; margin-top: 20px;">
+        <a href="https://tjaysworld.com/contact" target="_blank">Need help or do you have feedback?</a>
+    </p>
+
+    <script src="options.js"></script>
+</body>
+</html>
