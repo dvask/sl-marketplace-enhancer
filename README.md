@@ -7,7 +7,7 @@
 
 Enhance your Second Life Marketplace experience with additional product information and improved browsing features.
 
-For additional information about the extension, please visit my blog ![SL Marketplace Enhancer](https://tjaysworld.com/sl-marketplace-enhancer).
+For additional information about the extension, please visit my blog [Tjay's World - SL Marketplace Enhancer](https://tjaysworld.com/sl-marketplace-enhancer).
 
 ## 🚀 Features
 
