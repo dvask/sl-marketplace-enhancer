@@ -4,6 +4,8 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/dvask/sl-marketplace-enhancer)
 ![Chrome Web Store Version](https://img.shields.io/chrome-web-store/v/kpakiohanmcbpimlnahedhbggapnbnph)
 ![Mozilla Add-on Version](https://img.shields.io/amo/v/%7B0407efd9-c9f8-4fc4-af4e-8440037499cf%7D)
+![Edge Add-on Version](https://img.shields.io/badge/dynamic/json?label=Edge%20Add-on%20Version&query=%24.version&url=https%3A%2F%2Fmicrosoftedge.microsoft.com%2Faddons%2Fgetproductdetailsbycrxid%2Figilingjcjfjfejpihidhhlfalmknbdd)
+
 
 Enhance your Second Life Marketplace experience with additional product information and improved browsing features.
 
@@ -24,22 +26,35 @@ For additional information about the extension, please visit my blog [Tjay's Wor
 2. Click "Add to Firefox"
 
 **Option 2: Manual installation**
-1. [Download the latest release](https://github.com/dvask/sl-marketplace-enhancer/releases/latest)
+1. [Download the latest Firefox release](https://github.com/dvask/sl-marketplace-enhancer/releases/latest)
 2. Unzip the downloaded file
 3. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
 4. Click "Load Temporary Add-on"
 5. Navigate to the unzipped folder and select the `manifest.json` file
 
-### Chrome & Edge
+### Chrome
 
 **Option 1: Through Chrome Web Store (recommended)**
 1. Visit the [SL Marketplace Enhancer Chrome Web Store page](https://chromewebstore.google.com/detail/sl-marketplace-enhancer/kpakiohanmcbpimlnahedhbggapnbnph)
-2. Click "Add to Chrome" or "Get"
+2. Click "Add to Chrome"
 
 **Option 2: Manual installation**
-1. [Download the latest release](https://github.com/dvask/sl-marketplace-enhancer/releases/latest)
+1. [Download the latest Chrome release](https://github.com/dvask/sl-marketplace-enhancer/releases/latest)
 2. Unzip the downloaded file
-3. Open Chrome/Edge and navigate to `chrome://extensions`
+3. Open Chrome and navigate to `chrome://extensions`
+4. Enable "Developer mode" in the top right
+5. Click "Load unpacked" and select the unzipped folder
+
+### Edge
+
+**Option 1: Through Edge Add-ons (recommended)**
+1. Visit the [SL Marketplace Enhancer Chrome Web Store page](https://microsoftedge.microsoft.com/addons/detail/sl-marketplace-enhancer/igilingjcjfjfejpihidhhlfalmknbdd)
+2. Click "Get"
+
+**Option 2: Manual installation**
+1. [Download the latest Chrome release](https://github.com/dvask/sl-marketplace-enhancer/releases/latest)
+2. Unzip the downloaded file
+3. Open Chrome and navigate to `edge://extensions`
 4. Enable "Developer mode" in the top right
 5. Click "Load unpacked" and select the unzipped folder
 
