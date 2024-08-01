@@ -48,7 +48,7 @@ For additional information about the extension, please visit my blog [Tjay's Wor
 ### Edge
 
 **Option 1: Through Edge Add-ons (recommended)**
-1. Visit the [SL Marketplace Enhancer Chrome Web Store page](https://microsoftedge.microsoft.com/addons/detail/sl-marketplace-enhancer/igilingjcjfjfejpihidhhlfalmknbdd)
+1. Visit the [SL Marketplace Enhancer Edge Add-ons page](https://microsoftedge.microsoft.com/addons/detail/sl-marketplace-enhancer/igilingjcjfjfejpihidhhlfalmknbdd)
 2. Click "Get"
 
 **Option 2: Manual installation**
