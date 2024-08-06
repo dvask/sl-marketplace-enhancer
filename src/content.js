@@ -8,6 +8,8 @@
 let timestampsAdded = false;
 let tagsAdded = false;
 let lastUrl = '';
+let settings = {};
+let initialLoad = true;
 
 // Utility functions
 function parseTimestamp(url) {
@@ -109,74 +111,198 @@ function hideFeaturedItems(selector) {
     }
 }
 
-function handlePageLoad() {
-    const storage = chrome.storage || (browser && browser.storage);
+function getElementByXPath(xpath) {
+    return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+}
+
+function updateSearchPageCheckboxes() {
+    const filterMappings = [
+        { param: 'copy_permission', xpath: '//*[@id="search_copy_permission"]' },
+        { param: 'modify_permission', xpath: '//*[@id="search_modify_permission"]' },
+        { param: 'transfer_permission', xpath: '//*[@id="search_transfer_permission"]' },
+        { param: 'limited_quantities', xpath: '//*[@id="search_limited_quantities"]' },
+        { param: 'is_demo', xpath: '//*[@id="search_is_demo"]' }
+    ];
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    filterMappings.forEach(mapping => {
+        const checkbox = getElementByXPath(mapping.xpath);
+        if (checkbox) {
+            const isChecked = urlParams.get(`search[${mapping.param}]`) === '1';
+            checkbox.checked = isChecked;
+        }
+    });
+}
+
+// Function to generate filter parameters
+function getFilterParams() {
+    const params = new URLSearchParams();
     
-    if (!storage || !storage.sync) {
-        console.error('Storage API is not available');
-        return;
+    if (settings.enableAdvancedFilters) {
+        if (settings.filterCopy) params.append('search[copy_permission]', '1');
+        if (settings.filterModify) params.append('search[modify_permission]', '1');
+        if (settings.filterTransfer) params.append('search[transfer_permission]', '1');
+        if (settings.filterLimitedQuantities) params.append('search[limited_quantities]', '1');
+        if (settings.filterDemoItems) params.append('search[is_demo]', '1');
     }
+    
+    return params;
+}
 
-    storage.sync.get([
-        'pluginEnabled',
-        'enableProductTimestamp',
-        'enableProductTags',
-        'enableSearchTimestamp',
-        'enableStoreTimestamp',
-        'hideFeaturedItemsCategory'
-    ], function(result) {
-        if (chrome.runtime.lastError) {
-            console.error('An error occurred:', chrome.runtime.lastError);
-            return;
-        }
+// Function to modify search links
+function modifySearchLinks() {
+    const links = document.querySelectorAll('a[href*="search"]');
+    links.forEach(link => {
+        const url = new URL(link.href, window.location.origin);
+        if (!url.pathname.includes('/stores/') && (url.searchParams.has('search[keywords]') || url.searchParams.has('search[category_id]'))) {
+            const filterParams = getFilterParams();
+            let modified = false;
 
-        const settings = {
-            pluginEnabled: result.pluginEnabled !== false,
-            enableProductTimestamp: result.enableProductTimestamp !== false,
-            enableProductTags: result.enableProductTags !== false,
-            enableSearchTimestamp: result.enableSearchTimestamp !== false,
-            enableStoreTimestamp: result.enableStoreTimestamp !== false,
-            hideFeaturedItemsCategory: result.hideFeaturedItemsCategory === true
-        };
-
-        if (settings.pluginEnabled === false) {
-            console.log('Plugin is disabled');
-            return;
-        }
-
-        const url = window.location.href;
-
-        if (url !== lastUrl) {
-            timestampsAdded = false;
-            tagsAdded = false;
-            lastUrl = url;
-        }
-
-        if (url.includes('/p/')) {
-            if (settings.enableProductTimestamp) {
-                addPostTimestamp();
+            // Check each filter parameter
+            for (let [key, value] of filterParams) {
+                if (!url.searchParams.has(key)) {
+                    url.searchParams.append(key, value);
+                    modified = true;
+                }
             }
-            if (settings.enableProductTags) {
-                addProductTags();
-            }
-        } else if (url.match(/products\/search/)) {
-            if (settings.enableSearchTimestamp) {
-                addSearchResultsTimestamps();
-            }
-        } else if (url.match(/\/stores\//)) {
-            if (settings.enableStoreTimestamp) {
-                addSearchResultsTimestamps();
-            }
-        }
 
-        if (settings.hideFeaturedItemsCategory) {
-            if (url.match(/^https:\/\/marketplace\.secondlife\.com\/(en-US|ja-JP|de-DE|fr-FR|pt-BR|es-ES)\/?$/)) {
-                hideFeaturedItems('#featured-items');
-            } else if (url.match(/products\/search/)) {
-                hideFeaturedItems('#featured-items-category');
+            if (modified) {
+                link.href = url.toString();
             }
         }
     });
+}
+
+// New function to handle form submission
+function handleFormSubmission() {
+    const form = document.querySelector('form.new_search');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const action = new URL(form.action);
+            if (action.pathname.includes('/stores/')) {
+                return; // Let the form submit normally for store searches for now.
+            }
+
+            e.preventDefault();
+            const formData = new FormData(form);
+            const url = new URL(form.action);
+            for (let [key, value] of formData) {
+                url.searchParams.append(key, value);
+            }
+            const filterParams = getFilterParams();
+            for (let [key, value] of filterParams) {
+                if (!url.searchParams.has(key)) {
+                    url.searchParams.append(key, value);
+                }
+            }
+            window.location.href = url.toString();
+        });
+    }
+}
+
+// Set up MutationObserver to handle dynamically added links
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+            modifySearchLinks();
+        }
+    });
+});
+
+function loadSettings() {
+    return new Promise((resolve, reject) => {
+        const storage = chrome.storage || (browser && browser.storage);
+        if (!storage || !storage.sync) {
+            console.error('Storage API is not available');
+            reject('Storage API not available');
+            return;
+        }
+
+        storage.sync.get([
+            'pluginEnabled',
+            'enableProductTimestamp',
+            'enableProductTags',
+            'enableSearchTimestamp',
+            'enableStoreTimestamp',
+            'hideFeaturedItemsCategory',
+            'enableAdvancedFilters',
+            'filterCopy',
+            'filterModify',
+            'filterTransfer',
+            'filterLimitedQuantities',
+            'filterDemoItems'
+        ], function(result) {
+            if (chrome.runtime.lastError) {
+                console.error('An error occurred:', chrome.runtime.lastError);
+                reject(chrome.runtime.lastError);
+                return;
+            }
+
+            settings = {
+                pluginEnabled: result.pluginEnabled !== false,
+                enableProductTimestamp: result.enableProductTimestamp !== false,
+                enableProductTags: result.enableProductTags !== false,
+                enableSearchTimestamp: result.enableSearchTimestamp !== false,
+                enableStoreTimestamp: result.enableStoreTimestamp !== false,
+                hideFeaturedItemsCategory: result.hideFeaturedItemsCategory === true,
+                enableAdvancedFilters: result.enableAdvancedFilters === true,
+                filterCopy: result.filterCopy === true,
+                filterModify: result.filterModify === true,
+                filterTransfer: result.filterTransfer === true,
+                filterLimitedQuantities: result.filterLimitedQuantities === true,
+                filterDemoItems: result.filterDemoItems === true
+            };
+
+            resolve();
+        });
+    });
+}
+
+function handlePageLoad() {
+    if (settings.pluginEnabled === false) {
+        console.log('Plugin is disabled');
+        return;
+    }
+
+    const url = window.location.href;
+
+    if (url !== lastUrl) {
+        timestampsAdded = false;
+        tagsAdded = false;
+        lastUrl = url;
+    }
+
+    if (url.includes('/p/')) {
+        if (settings.enableProductTimestamp) {
+            addPostTimestamp();
+        }
+        if (settings.enableProductTags) {
+            addProductTags();
+        }
+    } else if (url.match(/products\/search/)) {
+        if (settings.enableSearchTimestamp) {
+            addSearchResultsTimestamps();
+        }
+        updateSearchPageCheckboxes();
+    } else if (url.match(/\/stores\//)) {
+        if (settings.enableStoreTimestamp) {
+            addSearchResultsTimestamps();
+        }
+    }
+
+    if (settings.hideFeaturedItemsCategory) {
+        if (url.match(/^https:\/\/marketplace\.secondlife\.com\/(en-US|ja-JP|de-DE|fr-FR|pt-BR|es-ES)\/?$/)) {
+            hideFeaturedItems('#featured-items');
+        } else if (url.match(/products\/search/)) {
+            hideFeaturedItems('#featured-items-category');
+        }
+    }
+
+    modifySearchLinks();
+    handleFormSubmission();
+
+    initialLoad = false;
 }
 
 function observeDOMChanges() {
@@ -199,6 +325,25 @@ function observeDOMChanges() {
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
-// Run immediately and observe DOM changes
-handlePageLoad();
-observeDOMChanges();
+// Initialize and run
+loadSettings().then(() => {
+    handlePageLoad();
+    observeDOMChanges();
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+}).catch(error => {
+    console.error('Failed to load settings:', error);
+});
+
+// Listen for changes to the settings
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+    loadSettings().then(() => {
+        handlePageLoad();
+        modifySearchLinks();
+    }).catch(error => {
+        console.error('Failed to reload settings:', error);
+    });
+});
