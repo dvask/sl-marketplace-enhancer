@@ -6,25 +6,48 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     const checkboxIds = [
-      'hideFeaturedItemsCategory',
-      'enableProductTimestamp',
-      'enableProductTags',
-      'enableSearchTimestamp',
-      'enableStoreTimestamp'
+        'hideFeaturedItemsCategory',
+        'enableProductTimestamp',
+        'enableProductTags',
+        'enableSearchTimestamp',
+        'enableStoreTimestamp',
+        'enableSearchSorting',
+        'enableAdvancedFilters'
     ];
     const togglePluginButton = document.getElementById('togglePlugin');
     const storage = chrome.storage || (browser && browser.storage);
+
+    // Tab functionality
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.getAttribute('data-tab');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            tab.classList.add('active');
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+        });
+    });
 
     function showStatusMessage(message, isError = false) {
         const statusMessage = document.getElementById('statusMessage');
         if (statusMessage) {
             statusMessage.textContent = message;
-            statusMessage.style.color = isError ? 'red' : 'green';
             statusMessage.style.display = 'block';
             setTimeout(() => {
                 statusMessage.style.display = 'none';
             }, 3000);
         }
+    }
+
+    function displayVersion() {
+        const versionElement = document.getElementById('versionNumber');
+        const manifestData = chrome.runtime.getManifest();
+        versionElement.textContent = `v${manifestData.version}`;
     }
 
     function loadSettings() {
@@ -42,7 +65,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     enableProductTimestamp: true,
                     enableProductTags: true,
                     enableSearchTimestamp: true,
-                    enableStoreTimestamp: true
+                    enableStoreTimestamp: true,
+                    enableSearchSorting: false,
+                    enableAdvancedFilters: false
                 };
 
                 let settingsChanged = false;
@@ -111,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Load settings and add event listeners
+    displayVersion();
     loadSettings().then(() => {
         checkboxIds.forEach(id => {
             const checkbox = document.getElementById(id);

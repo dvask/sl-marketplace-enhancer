@@ -3,37 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SL Marketplace Enhancer</title>
+    <title>SL Marketplace Enhancer Settings</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            width: 400px;
+            min-width: 350px;
+            max-width: 100%;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
             background-color: #1e1e1e;
             color: #ffffff;
-            width: 300px;
-            padding: 20px;
-            margin: 0;
         }
         h1 {
             font-size: 18px;
-            margin-bottom: 20px;
             text-align: center;
+            margin-bottom: 10px;
+            color: #4CAF50;
         }
         .category {
             margin-bottom: 20px;
         }
-        h2 {
-            font-size: 16px;
+        .tab-container {
+            display: flex;
             margin-bottom: 10px;
-            color: #4CAF50;
+        }
+        .tab {
+            padding: 5px 10px;
+            cursor: pointer;
+            border: 1px solid #444;
+            border-bottom: none;
+            background-color: #2d2d2d;
+            color: #b0b0b0;
+        }
+        .tab.active {
+            background-color: #3c3c3c;
+            color: #ffffff;
+        }
+        .tab-content {
+            display: none;
+            border: 1px solid #444;
+            padding: 10px;
+            background-color: #2d2d2d;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-content p {
+            font-style: italic;
+            color: #a0a0a0;
+            border-bottom: 1px solid #444;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            margin-top: 0;
         }
         .option {
-            display: flex;
-            align-items: center;
             margin-bottom: 10px;
         }
         .option label {
-            margin-left: 10px;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .option input[type="checkbox"] {
+            margin-right: 5px;
         }
         .tooltip {
             position: relative;
@@ -44,7 +78,7 @@
         .tooltip .tooltiptext {
             visibility: hidden;
             width: 200px;
-            background-color: #555;
+            background-color: #4a4a4a;
             color: #fff;
             text-align: center;
             border-radius: 6px;
@@ -52,8 +86,9 @@
             position: absolute;
             z-index: 1;
             bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
+            left: auto;
+            right: 0;
+            margin-left: 0;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -61,103 +96,146 @@
             visibility: visible;
             opacity: 1;
         }
-        button {
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 4px;
+        #togglePlugin {
             width: 100%;
-            transition: background-color 0.3s;
+            padding: 8px;
+            margin-bottom: 10px;
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
-        button.enabled {
-            background-color: #4CAF50;
+        #togglePlugin.enabled {
+            background-color: #155724;
         }
-        button.disabled {
-            background-color: #f44336;
+        #togglePlugin.disabled {
+            background-color: #721c24;
         }
         #statusMessage {
             display: none;
-            text-align: center;
             margin-top: 10px;
             padding: 5px;
-            border-radius: 4px;
+            text-align: center;
+            background-color: #4a4a4a;
+            color: #e2e2e2;
         }
-        a {
-            color: #4CAF50;
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #b0b0b0;
+        }
+        .footer a {
             text-decoration: none;
+            color: #4CAF50;
+            margin-right: 10px;
         }
-        a:hover {
-            text-decoration: underline;
+        .footer .version {
+            color: #b0b0b0;
         }
     </style>
 </head>
 <body>
     <h1>SL Marketplace Enhancer</h1>
-    
-    <button id="togglePlugin">Disable Plugin</button>
+    <button id="togglePlugin" class="enabled">Disable Plugin</button>
 
-    <div class="category">
-        <h2>General</h2>
+    <div class="tab-container">
+        <div class="tab active" data-tab="general">General</div>
+        <div class="tab" data-tab="products">Products</div>
+        <div class="tab" data-tab="search">Search</div>
+        <div class="tab" data-tab="stores">Stores</div>
+    </div>
+
+    <div id="generalTab" class="tab-content active">
+        <p>Settings that apply to the entire marketplace.</p>
         <div class="option">
-            <input type="checkbox" id="hideFeaturedItemsCategory">
-            <label for="hideFeaturedItemsCategory">Hide Featured Items Category</label>
-            <div class="tooltip">[?]
-                <span class="tooltiptext">Hides the featured items categories on the front and search pages.</span>
-            </div>
+            <label>
+                <input type="checkbox" id="hideFeaturedItemsCategory">
+                Hide Featured Items Category
+                <span class="tooltip">[?]
+                    <span class="tooltiptext">Hides the featured items categories on the front and search pages.</span>
+                </span>
+            </label>
         </div>
     </div>
 
-    <div class="category">
-        <h2>Product Page</h2>
+    <div id="productsTab" class="tab-content">
+        <p>Settings specific to product pages.</p>
         <div class="option">
-            <input type="checkbox" id="enableProductTimestamp">
-            <label for="enableProductTimestamp">Show item listing date</label>
-            <div class="tooltip">[?]
-                <span class="tooltiptext">Displays the item listing date on product pages.</span>
-            </div>
+            <label>
+                <input type="checkbox" id="enableProductTimestamp">
+                Show item listing date
+                <span class="tooltip">[?]
+                    <span class="tooltiptext">Displays the item listing date on product pages.</span>
+                </span>
+            </label>
         </div>
         <div class="option">
-            <input type="checkbox" id="enableProductTags">
-            <label for="enableProductTags">Show listing tags</label>
-            <div class="tooltip">[?]
-                <span class="tooltiptext">Displays listing tags on the product pages.</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="category">
-        <h2>Search Results</h2>
-        <div class="option">
-            <input type="checkbox" id="enableSearchTimestamp">
-            <label for="enableSearchTimestamp">Show item listing date</label>
-            <div class="tooltip">[?]
-                <span class="tooltiptext">Displays the item listing dates in search results and on category pages.</span>
-            </div>
+            <label>
+                <input type="checkbox" id="enableProductTags">
+                Show listing tags
+                <span class="tooltip">[?]
+                    <span class="tooltiptext">Displays listing tags on the product pages.</span>
+                </span>
+            </label>
         </div>
     </div>
 
-    <div class="category">
-        <h2>Store Pages</h2>
+    <div id="searchTab" class="tab-content">
+        <p>Settings for search results and category pages.</p>
         <div class="option">
-            <input type="checkbox" id="enableStoreTimestamp">
-            <label for="enableStoreTimestamp">Show item listing date</label>
-            <div class="tooltip">[?]
-                <span class="tooltiptext">Displays the item listing dates on store pages.</span>
-            </div>
+            <label>
+                <input type="checkbox" id="enableSearchTimestamp">
+                Show item listing dates.
+                <span class="tooltip">[?]
+                    <span class="tooltiptext">Displays the item listing dates in search results and on category pages.</span>
+                </span>
+            </label>
+        </div>
+        <div class="option">
+            <label>
+                <input type="checkbox" id="enableSearchSorting">
+                Enable custom search result sorting
+                <span class="tooltip">[?]
+                    <span class="tooltiptext">Allows sorting search results by custom criteria.</span>
+                </span>
+            </label>
+        </div>
+        <div class="option">
+            <label>
+                <input type="checkbox" id="enableAdvancedFilters">
+                Enable advanced search filters
+                <span class="tooltip">[?]
+                    <span class="tooltiptext">Adds additional filtering options to search results.</span>
+                </span>
+            </label>
         </div>
     </div>
 
-    <div id="statusMessage"></div>
+    <div id="storesTab" class="tab-content">
+        <p>Settings for store pages.</p>
+        <div class="option">
+            <label>
+                <input type="checkbox" id="enableStoreTimestamp">
+                Show item listing dates.
+                <span class="tooltip">[?]
+                    <span class="tooltiptext">Displays the item listing dates on store pages.</span>
+                </span>
+            </label>
+        </div>
+    </div>
 
-    <p style="text-align: center; margin-top: 20px;">
-        <a href="https://tjaysworld.com/contact" target="_blank">Need help or do you have feedback?</a>
-    </p>
+    <div id="statusMessage" class="status-message"></div>
+
+    <div class="footer">
+        <div>
+            <a href="https://tjaysworld.com" target="_blank">My blog</a>
+            <a href="https://github.com/your-username/sl-marketplace-enhancer" target="_blank">GitHub</a>
+        </div>
+        <span id="versionNumber" class="version"></span>
+    </div>
 
     <script src="options.js"></script>
 </body>
