@@ -69,6 +69,20 @@
         .option input[type="checkbox"] {
             margin-right: 5px;
         }
+        .sub-option {
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+        .filter-group {
+            margin-left: 30px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .filter-group-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
         .tooltip {
             position: relative;
             display: inline-block;
@@ -168,7 +182,7 @@
                 <input type="checkbox" id="enableProductTimestamp">
                 Show item listing date
                 <span class="tooltip">[?]
-                    <span class="tooltiptext">Displays the item listing date on product pages.</span>
+                    <span class="tooltiptext">Displays the item listing date.</span>
                 </span>
             </label>
         </div>
@@ -177,7 +191,7 @@
                 <input type="checkbox" id="enableProductTags">
                 Show listing tags
                 <span class="tooltip">[?]
-                    <span class="tooltiptext">Displays listing tags on the product pages.</span>
+                    <span class="tooltiptext">Displays listing tags.</span>
                 </span>
             </label>
         </div>
@@ -188,18 +202,9 @@
         <div class="option">
             <label>
                 <input type="checkbox" id="enableSearchTimestamp">
-                Show item listing dates.
+                Show item listing dates
                 <span class="tooltip">[?]
                     <span class="tooltiptext">Displays the item listing dates in search results and on category pages.</span>
-                </span>
-            </label>
-        </div>
-        <div class="option">
-            <label>
-                <input type="checkbox" id="enableSearchSorting">
-                Enable custom search result sorting
-                <span class="tooltip">[?]
-                    <span class="tooltiptext">Allows sorting search results by custom criteria.</span>
                 </span>
             </label>
         </div>
@@ -208,20 +213,62 @@
                 <input type="checkbox" id="enableAdvancedFilters">
                 Enable advanced search filters
                 <span class="tooltip">[?]
-                    <span class="tooltiptext">Adds additional filtering options to search results.</span>
+                    <span class="tooltiptext">Adds additional filtering options to search results.<br /><br /> <b>Bear in mind that any filter selected will be applied to any search result except on store pages.</b></span>
                 </span>
             </label>
         </div>
+
+        <div id="advancedFiltersContainer" style="display: none;">
+            <div class="filter-group">
+                <div class="filter-group-header">Permissions:</div>
+                <div class="option sub-option">
+                    <label>
+                        <input type="checkbox" id="filterCopy">
+                        Copy
+                    </label>
+                </div>
+                <div class="option sub-option">
+                    <label>
+                        <input type="checkbox" id="filterModify">
+                        Modify
+                    </label>
+                </div>
+                <div class="option sub-option">
+                    <label>
+                        <input type="checkbox" id="filterTransfer">
+                        Transfer
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-header">Do not show:</div>
+                <div class="option sub-option">
+                    <label>
+                        <input type="checkbox" id="filterLimitedQuantities">
+                        Limited Quantities
+                    </label>
+                </div>
+                <div class="option sub-option">
+                    <label>
+                        <input type="checkbox" id="filterDemoItems">
+                        Demo Items
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
+
+        
 
     <div id="storesTab" class="tab-content">
         <p>Settings for store pages.</p>
         <div class="option">
             <label>
                 <input type="checkbox" id="enableStoreTimestamp">
-                Show item listing dates.
+                Show item listing dates
                 <span class="tooltip">[?]
-                    <span class="tooltiptext">Displays the item listing dates on store pages.</span>
+                    <span class="tooltiptext">Displays the item listing dates.</span>
                 </span>
             </label>
         </div>
@@ -232,7 +279,7 @@
     <div class="footer">
         <div>
             <a href="https://tjaysworld.com" target="_blank">My blog</a>
-            <a href="https://github.com/your-username/sl-marketplace-enhancer" target="_blank">GitHub</a>
+            <a href="https://github.com/dvask/sl-marketplace-enhancer" target="_blank">GitHub</a>
         </div>
         <span id="versionNumber" class="version"></span>
     </div>

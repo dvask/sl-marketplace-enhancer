@@ -11,10 +11,15 @@ document.addEventListener('DOMContentLoaded', function () {
         'enableProductTags',
         'enableSearchTimestamp',
         'enableStoreTimestamp',
-        'enableSearchSorting',
-        'enableAdvancedFilters'
+        'enableAdvancedFilters',
+        'filterCopy',
+        'filterModify',
+        'filterTransfer',
+        'filterLimitedQuantities',
+        'filterDemoItems'
     ];
     const togglePluginButton = document.getElementById('togglePlugin');
+    const advancedFiltersContainer = document.getElementById('advancedFiltersContainer');
     const storage = chrome.storage || (browser && browser.storage);
 
     // Tab functionality
@@ -66,8 +71,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     enableProductTags: true,
                     enableSearchTimestamp: true,
                     enableStoreTimestamp: true,
-                    enableSearchSorting: false,
-                    enableAdvancedFilters: false
+                    enableAdvancedFilters: false,
+                    filterCopy: false,
+                    filterModify: false,
+                    filterTransfer: false,
+                    filterLimitedQuantities: false,
+                    filterDemoItems: false
                 };
 
                 let settingsChanged = false;
@@ -98,6 +107,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     const isEnabled = result.pluginEnabled;
                     togglePluginButton.textContent = isEnabled ? 'Disable Plugin' : 'Enable Plugin';
                     togglePluginButton.className = isEnabled ? 'enabled' : 'disabled';
+                }
+
+                // Show/hide advanced filters container
+                if (advancedFiltersContainer) {
+                    advancedFiltersContainer.style.display = result.enableAdvancedFilters ? 'block' : 'none';
                 }
 
                 resolve();
@@ -140,7 +154,14 @@ document.addEventListener('DOMContentLoaded', function () {
     loadSettings().then(() => {
         checkboxIds.forEach(id => {
             const checkbox = document.getElementById(id);
-            if (checkbox) checkbox.addEventListener('change', () => saveSetting(id, checkbox.checked));
+            if (checkbox) {
+                checkbox.addEventListener('change', () => {
+                    saveSetting(id, checkbox.checked);
+                    if (id === 'enableAdvancedFilters') {
+                        advancedFiltersContainer.style.display = checkbox.checked ? 'block' : 'none';
+                    }
+                });
+            }
         });
 
         if (togglePluginButton) togglePluginButton.addEventListener('click', togglePlugin);
