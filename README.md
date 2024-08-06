@@ -16,6 +16,7 @@ For additional information about the extension, please visit my blog [Tjay's Wor
 - 📅 Display item listing date on product pages, search results and store pages.
 - 🏷️ Show product tags on product pages.
 - 🎛️ Hide the  "featured items" on category and search pages.
+- 🔍 Advanced search filters allowing persistant filtering when searching for items.
 
 ## 📥 Installation
 
