@@ -120,8 +120,8 @@ function updateSearchPageCheckboxes() {
         { param: 'copy_permission', xpath: '//*[@id="search_copy_permission"]' },
         { param: 'modify_permission', xpath: '//*[@id="search_modify_permission"]' },
         { param: 'transfer_permission', xpath: '//*[@id="search_transfer_permission"]' },
-        { param: 'limited_quantities', xpath: '//*[@id="search_limited_quantities"]' },
-        { param: 'is_demo', xpath: '//*[@id="search_is_demo"]' }
+        { param: 'no_limited_quantities', xpath: '//*[@id="search_no_limited_quantities"]' },
+        { param: 'no_demos', xpath: '//*[@id="search_no_demos"]' }
     ];
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -143,8 +143,8 @@ function getFilterParams() {
         if (settings.filterCopy) params.append('search[copy_permission]', '1');
         if (settings.filterModify) params.append('search[modify_permission]', '1');
         if (settings.filterTransfer) params.append('search[transfer_permission]', '1');
-        if (settings.filterLimitedQuantities) params.append('search[limited_quantities]', '1');
-        if (settings.filterDemoItems) params.append('search[is_demo]', '1');
+        if (settings.filterLimitedQuantities) params.append('search[no_limited_quantities]', '1');
+        if (settings.filterDemoItems) params.append('search[no_demos]', '1');
     }
     
     return params;
