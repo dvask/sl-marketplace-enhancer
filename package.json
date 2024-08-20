@@ -1,6 +1,6 @@
 {
   "name": "sl-marketplace-enhancer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Adds additional information to product and search pages of the Second Life Marketplace, such as item listing date and tags and more.",
   "scripts": {
     "build": "webpack --mode production"
