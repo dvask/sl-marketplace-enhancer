@@ -48,12 +48,22 @@ function addPostTimestamp() {
     }
 
     const humanReadableDate = formatDate(timestamp);
-    const ul = document.querySelector('div#product-details ul');
-    if (ul) {
-        addElementToContainer(ul, 'li', `Posted on: ${humanReadableDate}`);
+    const detailsDiv = document.querySelector('div#details.body2');
+    if (detailsDiv) {
+        const dateElement = document.createElement('div');
+        dateElement.className = 'body2 nowrap sl-enhancer-detail';
+        dateElement.textContent = `Posted: ${humanReadableDate}`;
+        
+        const redeliveryDiv = detailsDiv.querySelector('.body2.redelivery.nowrap.permitted');
+        if (redeliveryDiv && redeliveryDiv.nextSibling) {
+            detailsDiv.insertBefore(dateElement, redeliveryDiv.nextSibling);
+        } else {
+            detailsDiv.appendChild(dateElement);
+        }
+        
         timestampsAdded = true;
     } else {
-        console.log('Product details ul not found');
+        console.log('Details div not found');
     }
 }
 
@@ -65,13 +75,24 @@ function addProductTags() {
         return;
     }
 
-    const tags = metaKeywords.content.split(',').map(tag => tag.trim());
-    const ul = document.querySelector('div#product-details ul');
-    if (ul) {
-        addElementToContainer(ul, 'li', `Tags: ${tags.join(', ')}`);
+    const tags = metaKeywords.content.split(',').map(tag => tag.trim()).filter(tag => tag); // Filter out empty tags
+    const detailsDiv = document.querySelector('div#details.body2');
+    if (detailsDiv) {
+        const tagElement = document.createElement('div');
+        tagElement.className = 'body2 sl-enhancer-detail';
+        
+        tagElement.textContent = `Tags: ${tags.join(', ')}`;
+        
+        const timestampDiv = detailsDiv.querySelector('.sl-enhancer-detail');
+        if (timestampDiv && timestampDiv.nextSibling) {
+            detailsDiv.insertBefore(tagElement, timestampDiv.nextSibling);
+        } else {
+            detailsDiv.appendChild(tagElement);
+        }
+        
         tagsAdded = true;
     } else {
-        console.log('Product details ul not found');
+        console.log('Details div not found');
     }
 }
 
@@ -325,8 +346,24 @@ function observeDOMChanges() {
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
+function addStyleToHead() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .sl-enhancer-detail {
+            max-width: 220px;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            hyphens: auto;
+            margin-top: 5px;
+            line-height: 1.4; /* Improve readability for multi-line content */
+        }
+    `;
+    document.head.appendChild(style);
+}
+
 // Initialize and run
 loadSettings().then(() => {
+    addStyleToHead();
     handlePageLoad();
     observeDOMChanges();
     

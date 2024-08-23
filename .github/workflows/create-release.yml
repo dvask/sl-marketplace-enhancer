@@ -27,31 +27,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build the project
-        run: npm run build
-
-      - name: Prepare Firefox package
-        run: |
-          mkdir firefox_package
-          cp -r dist/* firefox_package/
-          mv firefox_package/manifest.firefox.json firefox_package/manifest.json
-          rm firefox_package/manifest.chrome.json
-          cd firefox_package
-          zip -r ../sl-marketplace-enhancer-firefox-${{ github.event.inputs.version }}.zip .
-          cd ..
-          rm -rf firefox_package
-
-      - name: Prepare Chrome package
-        run: |
-          mkdir chrome_package
-          cp -r dist/* chrome_package/
-          mv chrome_package/manifest.chrome.json chrome_package/manifest.json
-          rm chrome_package/manifest.firefox.json
-          cd chrome_package
-          zip -r ../sl-marketplace-enhancer-chrome-${{ github.event.inputs.version }}.zip .
-          cd ..
-          rm -rf chrome_package
-
       - name: Check and update version in files
         run: |
           VERSION=${{ github.event.inputs.version }}
@@ -84,6 +59,31 @@ jobs:
             # Update manifest.firefox.json
             sed -i 's/"version": "[^"]*"/"version": "'"$VERSION"'"/' src/manifest.firefox.json
           fi
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Prepare Firefox package
+        run: |
+          mkdir firefox_package
+          cp -r dist/* firefox_package/
+          mv firefox_package/manifest.firefox.json firefox_package/manifest.json
+          rm firefox_package/manifest.chrome.json
+          cd firefox_package
+          zip -r ../sl-marketplace-enhancer-firefox-${{ github.event.inputs.version }}.zip .
+          cd ..
+          rm -rf firefox_package
+
+      - name: Prepare Chrome package
+        run: |
+          mkdir chrome_package
+          cp -r dist/* chrome_package/
+          mv chrome_package/manifest.chrome.json chrome_package/manifest.json
+          rm chrome_package/manifest.firefox.json
+          cd chrome_package
+          zip -r ../sl-marketplace-enhancer-chrome-${{ github.event.inputs.version }}.zip .
+          cd ..
+          rm -rf chrome_package
 
       - name: Create Tag
         run: |
