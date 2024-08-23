@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "SL Marketplace Enhancer",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Adds additional information to product and search pages of the Second Life Marketplace, such as item listing date and tags and more.",
     "permissions": [
         "storage"
