@@ -48,22 +48,17 @@ function addPostTimestamp() {
     }
 
     const humanReadableDate = formatDate(timestamp);
-    const detailsDiv = document.querySelector('div#details.body2');
-    if (detailsDiv) {
+    const usageRequirementsDiv = document.getElementById('usage-requirements');
+    if (usageRequirementsDiv) {
         const dateElement = document.createElement('div');
-        dateElement.className = 'body2 nowrap sl-enhancer-detail';
+        dateElement.className = 'sl-enhancer-detail';
         dateElement.textContent = `Posted: ${humanReadableDate}`;
         
-        const redeliveryDiv = detailsDiv.querySelector('.body2.redelivery.nowrap.permitted');
-        if (redeliveryDiv && redeliveryDiv.nextSibling) {
-            detailsDiv.insertBefore(dateElement, redeliveryDiv.nextSibling);
-        } else {
-            detailsDiv.appendChild(dateElement);
-        }
+        usageRequirementsDiv.insertAdjacentElement('afterend', dateElement);
         
         timestampsAdded = true;
     } else {
-        console.log('Details div not found');
+        console.log('Usage requirements div not found');
     }
 }
 
@@ -76,23 +71,23 @@ function addProductTags() {
     }
 
     const tags = metaKeywords.content.split(',').map(tag => tag.trim()).filter(tag => tag); // Filter out empty tags
-    const detailsDiv = document.querySelector('div#details.body2');
-    if (detailsDiv) {
+    const usageRequirementsDiv = document.getElementById('usage-requirements');
+    if (usageRequirementsDiv) {
         const tagElement = document.createElement('div');
-        tagElement.className = 'body2 sl-enhancer-detail';
+        tagElement.className = 'sl-enhancer-detail';
         
         tagElement.textContent = `Tags: ${tags.join(', ')}`;
         
-        const timestampDiv = detailsDiv.querySelector('.sl-enhancer-detail');
-        if (timestampDiv && timestampDiv.nextSibling) {
-            detailsDiv.insertBefore(tagElement, timestampDiv.nextSibling);
+        const timestampDiv = document.querySelector('.sl-enhancer-detail');
+        if (timestampDiv) {
+            timestampDiv.insertAdjacentElement('afterend', tagElement);
         } else {
-            detailsDiv.appendChild(tagElement);
+            usageRequirementsDiv.insertAdjacentElement('afterend', tagElement);
         }
         
         tagsAdded = true;
     } else {
-        console.log('Details div not found');
+        console.log('Usage requirements div not found');
     }
 }
 
@@ -356,6 +351,7 @@ function addStyleToHead() {
             hyphens: auto;
             margin-top: 5px;
             line-height: 1.4; /* Improve readability for multi-line content */
+            padding: 10px; /* adding padding to match other LL divs on the product pages */
         }
     `;
     document.head.appendChild(style);
